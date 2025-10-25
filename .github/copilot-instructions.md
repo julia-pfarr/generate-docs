@@ -23,6 +23,8 @@ tests/
 : Follow standard conventions
 
 ## Recent Changes
+- 001-setup: Added [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
+- 001-setup: Added [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
 
 - 001-setup: Added
 

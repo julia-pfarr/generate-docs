@@ -2,7 +2,37 @@ openapi: "3.0.1"
 info:
   title: Documentation Assistant API
   version: "0.1.0"
+  description: API for AI-guided documentation authoring sessions.
+servers:
+  - url: https://api.example.com
 paths:
+  /projects:
+    post:
+      summary: Create a project record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectCreate'
+      responses:
+        '201':
+          description: Project created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+    get:
+      summary: List projects
+      responses:
+        '200':
+          description: Projects list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
   /sessions:
     post:
       summary: Create a documentation authoring session
@@ -11,18 +41,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                project_id:
-                  type: string
-                template_type:
-                  type: string
-                  enum: [tutorial, howto, explanation, reference, faq, landing]
-                target_audience:
-                  type: string
+              $ref: '#/components/schemas/SessionCreate'
       responses:
         '201':
           description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocSession'
   /sessions/{session_id}/prompts:
     post:
       summary: Submit a prompt to the AI agent for the session
@@ -37,15 +63,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                role:
-                  type: string
-                content:
-                  type: string
+              $ref: '#/components/schemas/PromptCreate'
       responses:
         '202':
           description: Generation accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prompt'
   /sessions/{session_id}/outputs:
     get:
       summary: List generated outputs for a session
@@ -58,11 +83,178 @@ paths:
       responses:
         '200':
           description: Outputs list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GeneratedOutput'
   /templates:
     get:
       summary: List available templates
       responses:
         '200':
           description: Templates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Template'
 components:
-  schemas: {}
+  schemas:
+    Project:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        repository_url:
+          type: string
+        license:
+          type: string
+          nullable: true
+        citation_text:
+          type: string
+          nullable: true
+        target_audience:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required: [id, name, repository_url, target_audience, created_at]
+    ProjectCreate:
+      type: object
+      properties:
+        name:
+          type: string
+        repository_url:
+          type: string
+        license:
+          type: string
+        citation_text:
+          type: string
+        target_audience:
+          type: string
+      required: [name, repository_url]
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        display_name:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [owner, maintainer, contributor]
+    DocSession:
+      type: object
+      properties:
+        id:
+          type: string
+        project_id:
+          type: string
+        user_id:
+          type: string
+        template_type:
+          type: string
+          enum: [tutorial, howto, explanation, reference, faq, landing]
+        prompts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Prompt'
+        generated_outputs:
+          type: array
+          items:
+            $ref: '#/components/schemas/GeneratedOutput'
+        status:
+          type: string
+          enum: [draft, reviewed, published]
+        created_at:
+          type: string
+          format: date-time
+      required: [id, project_id, user_id, template_type, status, created_at]
+    SessionCreate:
+      type: object
+      properties:
+        project_id:
+          type: string
+        template_type:
+          type: string
+          enum: [tutorial, howto, explanation, reference, faq, landing]
+        target_audience:
+          type: string
+      required: [project_id, template_type]
+    Prompt:
+      type: object
+      properties:
+        id:
+          type: string
+        session_id:
+          type: string
+        role:
+          type: string
+          enum: [system, user, assistant]
+        content:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    PromptCreate:
+      type: object
+      properties:
+        role:
+          type: string
+          enum: [system, user, assistant]
+        content:
+          type: string
+      required: [role, content]
+    GeneratedOutput:
+      type: object
+      properties:
+        id:
+          type: string
+        session_id:
+          type: string
+        content:
+          type: string
+        provenance:
+          type: object
+          properties:
+            agent:
+              type: string
+            model:
+              type: string
+              nullable: true
+            prompt_summary:
+              type: string
+            human_reviewer:
+              type: string
+        human_edits:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+      required: [id, session_id, content, provenance, created_at]
+    Template:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [tutorial, howto, explanation, reference, faq, landing]
+        schema:
+          type: object
+        created_at:
+          type: string
+          format: date-time
