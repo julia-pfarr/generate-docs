@@ -1,0 +1,68 @@
+openapi: "3.0.1"
+info:
+  title: Documentation Assistant API
+  version: "0.1.0"
+paths:
+  /sessions:
+    post:
+      summary: Create a documentation authoring session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project_id:
+                  type: string
+                template_type:
+                  type: string
+                  enum: [tutorial, howto, explanation, reference, faq, landing]
+                target_audience:
+                  type: string
+      responses:
+        '201':
+          description: Session created
+  /sessions/{session_id}/prompts:
+    post:
+      summary: Submit a prompt to the AI agent for the session
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role:
+                  type: string
+                content:
+                  type: string
+      responses:
+        '202':
+          description: Generation accepted
+  /sessions/{session_id}/outputs:
+    get:
+      summary: List generated outputs for a session
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Outputs list
+  /templates:
+    get:
+      summary: List available templates
+      responses:
+        '200':
+          description: Templates
+components:
+  schemas: {}

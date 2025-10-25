@@ -1,0 +1,36 @@
+{
+  "name": "research-docs-assistant",
+  "version": "0.1.0",
+  "description": "An application that assists software developers in writing documentation for their software, targeting Open Source developers in research contexts.",
+  "main": "src/cli/index.ts",
+  "scripts": {
+    "start": "ts-node src/cli/index.ts",
+    "build": "tsc",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/research-docs-assistant.git"
+  },
+  "keywords": [
+    "documentation",
+    "open-source",
+    "research",
+    "developer-tools"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "typescript": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^16.7.10",
+    "@types/react": "^17.0.2",
+    "@types/jest": "^26.0.24",
+    "jest": "^27.0.6",
+    "ts-jest": "^27.0.3"
+  }
+}
