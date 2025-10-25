@@ -1,0 +1,6 @@
+[project]
+name = "documentation-principles"
+version = "0.1.0"
+description = "AI-guided documentation assistant (research-focused)"
+authors = ["TODO: Your Name <you@example.com>"]
+license = { text = "TODO: add license" }
